@@ -407,6 +407,10 @@ stratum2+tcp://host:port/<base58check-authority-pubkey>
 The path is required; the connection is refused if the key is missing or the
 server certificate does not verify against it.
 
+Noise certificates use format version `0`; clients reject other certificate
+versions. The authority public key's Base58Check prefix remains `[1, 0]`, which
+versions the key encoding independently of the certificate format.
+
 ### Proxy (ckproxy upstream)
 
 In each `"proxy"` array entry, url may be:

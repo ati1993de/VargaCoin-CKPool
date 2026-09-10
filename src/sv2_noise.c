@@ -505,7 +505,7 @@ bool sv2_noise_load_server_keys(struct sv2_noise_server_keys *keys,
 	if (!secp)
 		return false;
 
-	keys->cert_version = 1;
+	keys->cert_version = SV2_NOISE_CERT_VERSION;
 	keys->cert_valid_from = (uint32_t)now;
 	if (valid_days == 0)
 		valid_days = 365;
@@ -715,6 +715,7 @@ bool sv2_noise_handshake_read(sv2_noise_session_t *s, const uint8_t *in, size_t 
  *   version U16 | valid_from U32 | not_valid_after U32 | signature(64)
  * The signed message is m = SHA256(version || valid_from || not_valid_after ||
  * server_static_xonly), where the server static key is the rs learned in act2.
+ * The certificate version must be supported (currently 0 only).
  * The signature must verify under the configured pool authority x-only pubkey,
  * and the current time must fall within the certificate validity window.
  */
@@ -725,7 +726,14 @@ static bool client_verify_certificate(sv2_noise_session_t *s, const uint8_t sigm
 	secp256k1_pubkey pub;
 	secp256k1_xonly_pubkey xopub, auth;
 	uint32_t valid_from, not_valid_after;
+	uint16_t version;
 	time_t now = time(NULL);
+
+	version = (uint16_t)sigmsg[0] | ((uint16_t)sigmsg[1] << 8);
+	if (version != SV2_NOISE_CERT_VERSION) {
+		LOGNOTICE("SV2 client: unsupported server certificate version %u", version);
+		return false;
+	}
 
 	/* version|valid_from|not_valid_after: first 10 wire bytes (LE) */
 	memcpy(signed_fields, sigmsg, 10);
@@ -1016,6 +1024,7 @@ bool sv2_noise_encrypt_frame(sv2_noise_session_t *s, const uint8_t *plain, size_
 /*
  * Base58Check for SV2 authority pubkey (spec 04 §4.7):
  *   payload = version_le_u16(0x0001 as bytes [1,0]) || xonly_pubkey(32)
+ *   This prefix versions the key encoding only, not the certificate format.
  *   checksum = first 4 bytes of SHA256(SHA256(payload))
  *   encode payload||checksum in Base58 (Bitcoin alphabet)
  */
