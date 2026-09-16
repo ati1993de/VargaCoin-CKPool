@@ -1,7 +1,7 @@
 VargaCoin Solo Mining Example
 
 URL:
-stratum+tcp://YOUR_POOL_HOST:3370
+stratum+tcp://pool.vargacoin.com:3370
 
 Username:
 YOUR_VARG_ADDRESS
