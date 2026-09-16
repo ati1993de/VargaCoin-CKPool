@@ -7,7 +7,7 @@ VargaCoin uses SHA-256d proof of work.
 Planned public Solo Stratum endpoint:
 
 ```text
-solo.vargacoin.com:3370
+YOUR_POOL_HOST:3370
 ```
 
 Miner credentials:

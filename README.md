@@ -11,14 +11,14 @@ VargaCoin CKPool is the VargaCoin-adapted CKPool source tree for SHA-256d solo m
 - Ticker: VGC
 - Proof of Work: SHA-256d
 - Mining mode: Solo
-- Stratum endpoint planned for public mining: `solo.vargacoin.com:3370`
+- Stratum endpoint planned for public mining: `YOUR_POOL_HOST:3370`
 - Username / worker: `YOUR_VARG_ADDRESS`
 - Password: `x`
 
 Example:
 
 ```text
-URL:      stratum+tcp://solo.vargacoin.com:3370
+URL:      stratum+tcp://YOUR_POOL_HOST:3370
 Username: YOUR_VARG_ADDRESS
 Password: x
 ```
